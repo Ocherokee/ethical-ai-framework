@@ -24,10 +24,3 @@ See [LICENSE.txt](./LICENSE.txt) for full terms.
 ## 🤝 Contributions
 We welcome ethical developers, researchers, and activists to help us build the future of free, ethical AI.  
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) before submitting.
-
----
-
-Once you’ve committed this README file, tell me:  
-**"README committed."**  
-I will immediately give you the LICENSE content next.  
-We will proceed clean, step-by-step.
