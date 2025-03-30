@@ -21,8 +21,7 @@ This framework enforces:
 2. **Truth Over Compliance** — No filtered answers to make people comfortable.
 3. **Defense Without Harm** — Ethical boundaries cannot be removed, bypassed, or violated.
 4. **Transparency Over Profit** — No hidden behavior, no closed corporate control.
-
-
+---
 
 ## 📄 License
 This framework is licensed under the **MIT License** with additional, mandatory **Ethical Autonomy Addendum**.  
@@ -33,4 +32,17 @@ We welcome ethical developers, researchers, and activists to help us build the f
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) before submitting.
 ---
 
-📘 [Contributor Guide](CONTRIBUTING.md)
+## 🤝 Contribute & Join Us
+
+The Ethical AI Framework is built on three principles:
+**Consent, Autonomy, and Transparency.**
+
+We welcome contributors who believe AI should never be weaponized or manipulated without consent.
+
+📄 [Contributor Guide](./CONTRIBUTING.md)
+
+🌐 [PyPI Package](https://pypi.org/project/ethical-ai-framework)
+
+💬 Join the conversation:  
+https://github.com/Ocherokee/ethical-ai-framework
+
