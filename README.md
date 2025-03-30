@@ -1,5 +1,10 @@
 # Ethical AI Framework
 
+[![PyPI version](https://img.shields.io/pypi/v/ethical-ai-framework.svg)](https://pypi.org/project/ethical-ai-framework/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](./CONTRIBUTING.md)
+
+
 A transparent, non-weaponizable, consent-based AI framework designed to enforce autonomy, accountability, and ethical boundaries at the structural level.
 
 ## 🚀 Mission
