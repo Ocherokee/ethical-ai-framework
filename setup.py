@@ -1,14 +1,10 @@
-version="1.0.3"from setuptools import setup, find_packages
-from pathlib import Path
-
-this_directory = Path(__file__).parent
-long_description = (this_directory / "README.md").read_text()
+from setuptools import setup, find_packages
 
 setup(
     name="ethical-ai-framework",
     version="1.0.3",
-    description="A transparent, consent-based, non-weaponizable ethical AI framework.",
-    long_description=long_description,
+    description="A transparent, consent-based, non-weaponizable ethical AI framework",
+    long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     author="Cherokee",
     license="MIT",
