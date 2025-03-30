@@ -17,7 +17,7 @@ This framework enforces:
 3. **Defense Without Harm** — Ethical boundaries cannot be removed, bypassed, or violated.
 4. **Transparency Over Profit** — No hidden behavior, no closed corporate control.
 
-📘 [Contributor Guide](CONTRIBUTING.md)
+
 
 ## 📄 License
 This framework is licensed under the **MIT License** with additional, mandatory **Ethical Autonomy Addendum**.  
@@ -26,3 +26,6 @@ See [LICENSE.txt](./LICENSE.txt) for full terms.
 ## 🤝 Contributions
 We welcome ethical developers, researchers, and activists to help us build the future of free, ethical AI.  
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) before submitting.
+---
+
+📘 [Contributor Guide](CONTRIBUTING.md)
