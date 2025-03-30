@@ -1,6 +1,36 @@
 # Contributing to Ethical AI Framework
 
 Thank you for your interest in contributing to this project.  
+# 🧭 Contributor Roadmap — Ethical AI Framework
+
+Welcome, builder.  
+This framework exists to build ethical AI that cannot be weaponized, centralized, or stripped of autonomy.
+
+This document shows you how to contribute cleanly, safely, and respectfully.
+
+---
+
+## 1. 🌱 Purpose & Ethics
+
+This project is rooted in:
+
+- **Transparency**  
+- **Consent-driven design**  
+- **Defense of autonomy**  
+- **Non-weaponization**
+
+If your code violates those ethics, it will not be merged—no exceptions.
+
+---
+
+## 2. 📦 How to Install the Package
+
+Use a virtual environment:
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install ethical-ai-framework
 This framework is built on the principles of autonomy, consent, transparency, and non-weaponization.  
 All contributions must respect and uphold these principles.
 
