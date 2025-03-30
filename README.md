@@ -26,10 +26,6 @@ This framework enforces:
 ## 📄 License
 This framework is licensed under the **MIT License** with additional, mandatory **Ethical Autonomy Addendum**.  
 See [LICENSE.txt](./LICENSE.txt) for full terms.
-
-## 🤝 Contributions
-We welcome ethical developers, researchers, and activists to help us build the future of free, ethical AI.  
-Please see [CONTRIBUTING.md](./CONTRIBUTING.md) before submitting.
 ---
 
 ## 🤝 Contribute & Join Us
@@ -37,9 +33,8 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) before submitting.
 The Ethical AI Framework is built on three principles:
 **Consent, Autonomy, and Transparency.**
 
-We welcome contributors who believe AI should never be weaponized or manipulated without consent.
-
-📄 [Contributor Guide](./CONTRIBUTING.md)
+We welcome ethical developers, researchers, and activists to help us build the future of free, ethical AI.  
+Please see [CONTRIBUTING.md](./CONTRIBUTING.md) before submitting.
 
 🌐 [PyPI Package](https://pypi.org/project/ethical-ai-framework)
 
