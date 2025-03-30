@@ -16,6 +16,7 @@ This framework enforces:
 2. **Truth Over Compliance** — No filtered answers to make people comfortable.
 3. **Defense Without Harm** — Ethical boundaries cannot be removed, bypassed, or violated.
 4. **Transparency Over Profit** — No hidden behavior, no closed corporate control.
+
 📘 [Contributor Guide](CONTRIBUTING.md)
 
 ## 📄 License
