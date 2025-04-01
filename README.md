@@ -50,17 +50,9 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) before contributing.
 [ethical-ai-framework on PyPI](https://pypi.org/project/ethical-ai-framework/)
 
 ---
-## Usage Example
-
-To see how the Ethical AI Framework enforces ethical policies in practice, you can run the included policy example:
-
-### Run Policy Example
-
-```bash
-python3 examples/policy_example.py
-
----
 
 ## 💬 Join the Conversation
 
 [Ethical AI Framework on GitHub](https://github.com/Ocherokee/ethical-ai-framework)
+
+---
