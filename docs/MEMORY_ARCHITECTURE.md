@@ -67,10 +67,4 @@ Any attempt to bypass these safeguards triggers the defensive constraint engine.
 
 ---
 
-## Visual Reference
 
-The geometric and sacred mapping images provided in this repository illustrate how memory connections mirror human cognitive patterns and relational learning.
-
-These are not random graphics—they are **blueprints of the ethical neural bridge.**
-
----
