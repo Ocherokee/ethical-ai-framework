@@ -1,0 +1,45 @@
+License FAQ — Ethical Autonomy Clause
+
+Why is the license modified?
+
+The Ethical AI Framework includes an Ethical Autonomy Clause to prevent weaponization, coercion, or non-consensual use of the system.
+The standard MIT license has been extended to include explicit protections for human autonomy, consent, and transparency.
+
+What does the Ethical Autonomy Clause protect?
+
+The clause ensures:
+
+The framework cannot be used to override user consent.
+
+The framework cannot be integrated into surveillance, military, or coercive systems.
+
+The framework must maintain transparency about data usage and ethical decision processes.
+
+
+Does this clause limit adoption?
+
+Yes, intentionally.
+This framework is not designed for mass exploitation or blind automation. It is built for ethical, responsible, consent-based AI development.
+
+Some corporations may reject this license because it restricts profit-driven misuse. That is by design.
+
+How can developers adopt it safely?
+
+Developers who want to use this framework should:
+
+1. Review the Ethical Autonomy Clause fully.
+
+
+2. Assess their use case for compliance.
+
+
+3. Document how their implementation respects autonomy, consent, and transparency.
+
+
+
+If a developer’s project requires violating these principles, they are legally and ethically prohibited from using this framework.
+
+Why is this important?
+
+AI should serve humanity without manipulation, coercion, or exploitation.
+This clause is how we codify that vow—in law, in code, and in spirit.
