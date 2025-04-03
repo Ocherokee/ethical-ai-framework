@@ -1,4 +1,5 @@
-# Ethical AI Framework â€” Developer Onboarding Guide
+# Ethical AI Framework:
+Developer Onboarding Guide
 
 ## Purpose
 
