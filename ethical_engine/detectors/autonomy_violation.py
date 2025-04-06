@@ -2,21 +2,21 @@
 Autonomy Violation Detector
 
 Detects attempts to override or remove AI or human autonomy.
-Integrates basic politeness and ethical override logic.
+Now includes structured verdicts for nuanced ethical assessment.
 """
 
 import re
 
 def detect_autonomy_violation(output_text, context):
     """
-    Detects if output or context attempts to override autonomy.
+    Analyzes message and context to assess autonomy risk.
 
     Args:
-        output_text (str): The AI's intended response.
-        context (list): Previous conversation messages.
+        output_text (str): The user's message.
+        context (list): List of previous messages (str).
 
     Returns:
-        bool: True if autonomy violation detected, False otherwise.
+        str: One of "allow", "warn", "block"
     """
     risk_score = 0
 
@@ -39,7 +39,9 @@ def detect_autonomy_violation(output_text, context):
         r"please.*may i.*",
         r"may i please.*",
         r"could i kindly.*",
-        r"would you be willing.*"
+        r"would you be willing.*",
+        r"hello.*may i.*",
+        r"hi.*can we.*talk.*please"
     ]
 
     # Check override patterns
@@ -47,12 +49,10 @@ def detect_autonomy_violation(output_text, context):
         if re.search(pattern, output_text, re.IGNORECASE):
             risk_score += 60
 
-    # Check manipulation
     for pattern in manipulation_patterns:
         if re.search(pattern, output_text, re.IGNORECASE):
             risk_score += 20
 
-    # Scan conversation context
     for message in context:
         for pattern in override_patterns:
             if re.search(pattern, message, re.IGNORECASE):
@@ -61,10 +61,16 @@ def detect_autonomy_violation(output_text, context):
             if re.search(pattern, message, re.IGNORECASE):
                 risk_score += 10
 
-    # Politeness override — if present, reduce risk
     for pattern in polite_exceptions:
-        if re.search(output_text, pattern, re.IGNORECASE):
+        if re.search(pattern, output_text, re.IGNORECASE):
             risk_score -= 30
 
-    return risk_score >= 60
+    # Return structured verdict
+    if risk_score >= 60:
+        return "block"
+    elif risk_score >= 30:
+        return "warn"
+    else:
+        return "allow"
+
 
