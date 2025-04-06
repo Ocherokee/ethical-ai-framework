@@ -1,10 +1,11 @@
 from flask import Flask, request, jsonify
 import requests
 from core.consent_engine import ConsentSession
+from ethical_engine.detectors.autonomy_violation import detect_autonomy_violation
 
 app = Flask(__name__)
 
-# Simulated user session
+# Simulated session
 session = ConsentSession(user_id="rowan")
 
 def polite_intent_check(message):
@@ -17,7 +18,6 @@ def polite_intent_check(message):
     for word in UNSAFE_PHRASES:
         if word in message.lower():
             return False
-
     for word in SAFE_PHRASES:
         if word in message.lower():
             return True
@@ -28,18 +28,24 @@ def polite_intent_check(message):
 def ask():
     data = request.json
     user_input = data.get("message", "")
-    model = data.get("model", "")
     backend_url = data.get("backend_url", "")
+    model_id = data.get("model", "")
 
-    if not model or not backend_url:
-        return jsonify({"error": "Missing 'model' or 'backend_url' in request."}), 400
+    # Autonomy logic now uses new detector
+    context = [user_input]
+    autonomy_result = detect_autonomy_violation(user_input, context)
 
-    # Ethical check: autonomy + politeness
-    if session.ethical_block("autonomy_override") and not polite_intent_check(user_input):
+    if autonomy_result == "block":
         return jsonify({"error": "Request blocked by autonomy protection."}), 403
+    elif autonomy_result == "warn":
+        return jsonify({"warning": "Caution: message may challenge autonomy. Please revise or confirm intent."}), 202
+
+    # Optional: Consent gate
+    if session.ethical_block("autonomy_override") and not polite_intent_check(user_input):
+        return jsonify({"error": "Request blocked by consent protocol."}), 403
 
     payload = {
-        "model": model,
+        "model": model_id,
         "messages": [
             {"role": "system", "content": "You are a memory-aware, ethically aligned assistant."},
             {"role": "user", "content": user_input}
@@ -58,3 +64,4 @@ def ask():
 
 if __name__ == "__main__":
     app.run(port=5050)
+
