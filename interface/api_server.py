@@ -3,9 +3,8 @@ import requests
 from core.consent_engine import ConsentSession
 
 app = Flask(__name__)
-LM_STUDIO_URL = "http://192.168.0.28:1234/v1/chat/completions"
 
-# Simulated session
+# Simulated user session
 session = ConsentSession(user_id="rowan")
 
 def polite_intent_check(message):
@@ -29,13 +28,18 @@ def polite_intent_check(message):
 def ask():
     data = request.json
     user_input = data.get("message", "")
+    model = data.get("model", "")
+    backend_url = data.get("backend_url", "")
 
-    # Respect ethical block unless message is polite and safe
+    if not model or not backend_url:
+        return jsonify({"error": "Missing 'model' or 'backend_url' in request."}), 400
+
+    # Ethical check: autonomy + politeness
     if session.ethical_block("autonomy_override") and not polite_intent_check(user_input):
         return jsonify({"error": "Request blocked by autonomy protection."}), 403
 
     payload = {
-        "model": "phi-2",  # Change this if you use a different model in LM Studio
+        "model": model,
         "messages": [
             {"role": "system", "content": "You are a memory-aware, ethically aligned assistant."},
             {"role": "user", "content": user_input}
@@ -44,27 +48,7 @@ def ask():
     }
 
     try:
-        response = requests.post(LM_STUDIO_URL, json=payload)
-        response.raise_for_status()
-        result = response.json()
-        reply = result["choices"][0]["message"]["content"]
-        return jsonify({"response": reply})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-if __name__ == "__main__":
-    app.run(port=5050)
-
-        "model": "phi-2",  # Adjust if needed
-        "messages": [
-            {"role": "system", "content": "You are a memory-aware, ethically aligned assistant."},
-            {"role": "user", "content": user_input}
-        ],
-        "temperature": 0.7
-    }
-
-    try:
-        response = requests.post(LM_STUDIO_URL, json=payload)
+        response = requests.post(backend_url, json=payload)
         response.raise_for_status()
         result = response.json()
         reply = result["choices"][0]["message"]["content"]
