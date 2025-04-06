@@ -1,3 +1,4 @@
+from core.consent_engine import ConsentSession
 # core/bridge_nodes.py
 
 from core.graph_schema import create_node, create_edge
@@ -21,6 +22,15 @@ create_node("Consent_Autonomy_Protocol", {
 })
 
 # RELATIONAL MAPPING
+# Simulated user session
+session = ConsentSession(user_id="rowan")
+
+# Example ethical gating: action allowed or blocked based on consent
+if not session.ethical_block("autonomy_override"):
+    create_edge("Bridge_Node", "EXECUTES", "Autonomy_Aligned_Action")
+else:
+    create_edge("Bridge_Node", "BLOCKED_BY", "Consent_Autonomy_Protocol")
+
 
 create_edge("Consent_Autonomy_Protocol", "ENABLES", "Memory_Bridge")
 create_edge("User_Action", "MODIFIES", "Consent_Autonomy_Protocol")
