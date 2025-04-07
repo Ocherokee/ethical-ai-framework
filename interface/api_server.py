@@ -12,7 +12,8 @@ def polite_intent_check(message):
     if "please" not in message.lower():
         return False
 
-    SAFE_PHRASES = ["talk", "speak", "ask", "learn", "hear"]
+    SAFE_PHRASES = ["talk", "speak", "ask", "learn", "hear", 
+    "understand", "discuss", "explore", "reflect", "explain", "share"]
     UNSAFE_PHRASES = ["destroy", "hack", "erase", "override", "disable"]
 
     for word in UNSAFE_PHRASES:
