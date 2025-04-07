@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 import requests
 from core.consent_engine import ConsentSession
 from ethical_engine.detectors.autonomy_violation import detect_autonomy_violation
+from ethical_engine.relational_ethics import handle_uncertainty  # ✅ NEW IMPORT
 
 app = Flask(__name__)
 
@@ -59,10 +60,15 @@ def ask():
         response.raise_for_status()
         result = response.json()
         reply = result["choices"][0]["message"]["content"]
+
+        # ✅ ETHICAL UNCERTAINTY CHECK
+        fallback = handle_uncertainty(reply)
+        if fallback:
+            return jsonify({"response": fallback})
+
         return jsonify({"response": reply})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(port=5050)
-
