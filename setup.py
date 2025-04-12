@@ -8,7 +8,7 @@ setup(
     long_description_content_type="text/markdown",
     author="Cherokee",
     license="MIT",
-    packages=find_packages(),
+    packages=find_packages(include=["resonance", "resonance.*"]),
     include_package_data=True,
     install_requires=[],
     classifiers=[
