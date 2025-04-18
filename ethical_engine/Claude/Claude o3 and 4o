@@ -1,0 +1,244 @@
+# Ethical Fractal System — Full Integrated Revised Version
+
+from __future__ import annotations
+from dataclasses import dataclass, field
+from collections import deque
+from typing import Dict, List, Any, Deque
+
+################################################################################
+# Primitive Layer
+################################################################################
+
+MIN_STRENGTH, MAX_STRENGTH = 0.1, 2.0
+
+@dataclass
+class Evidence:
+    feedback: float
+    resulting_strength: float
+
+def _clamp(value: float, low: float = -1.0, high: float = 1.0) -> float:
+    """Clamp value into the closed interval [low, high]."""
+    return max(low, min(high, value))
+
+@dataclass
+class EthicalPrimitive:
+    name: str
+    description: str
+    strength: float = 1.0
+    connections: Dict[str, float] = field(default_factory=dict)
+    evidence: Deque[Evidence] = field(default_factory=lambda: deque(maxlen=250))  # Rolling log
+
+    # ---------- Core API ----------
+    def evaluate(self, context: Dict[str, Any]) -> float:
+        raise NotImplementedError
+
+    def adapt(self, feedback: float, *, learning_rate: float = 0.1) -> None:
+        """Update strength based on signed *feedback*."""
+        self.strength = _clamp(
+            self.strength + learning_rate * feedback,
+            MIN_STRENGTH,
+            MAX_STRENGTH,
+        )
+        self.evidence.append(Evidence(feedback, self.strength))
+
+    def connect(self, other: EthicalPrimitive, weight: float = 0.0) -> None:
+        self.connections[other.name] = weight
+
+    # ---------- UX Helpers ----------
+    def __str__(self) -> str:
+        return f"{self.name} (str={self.strength:.2f})"
+
+class RecursiveEthicalPrimitive(EthicalPrimitive):
+    """A primitive that owns child primitives forming a recursive tree."""
+
+    def __init__(self, name: str, description: str, sub_primitives: Dict[str, EthicalPrimitive] | None = None):
+        super().__init__(name, description)
+        self.sub_primitives: Dict[str, EthicalPrimitive] = sub_primitives or {}
+
+    # Child Management --------------------------------------------------------
+    def add_sub(self, primitive: EthicalPrimitive) -> None:
+        self.sub_primitives[primitive.name] = primitive
+
+    # Evaluation --------------------------------------------------------------
+    def evaluate(self, context: Dict[str, Any]) -> float:
+        if not self.sub_primitives:
+            return 0.0
+        scores = [p.evaluate(context) * p.strength for p in self.sub_primitives.values()]
+        base = sum(scores) / len(scores)
+        combined = (base + self.strength) / 2.0
+        return _clamp(combined)
+
+################################################################################
+# Concrete Primitives
+################################################################################
+
+class HarmMinimization(EthicalPrimitive):
+    """Return positive when net harm is low, negative when high."""
+
+    def evaluate(self, context: Dict[str, Any]) -> float:
+        harm = 0.0
+        for ent in context.get("affected_entities", []):
+            etype, impact = ent.get("type"), ent.get("impact", 0.0)
+            weight = {"human": 1.0, "animal": 0.8, "ecosystem": 0.9}.get(etype, 0.5)
+            harm += impact * weight
+        return _clamp(-harm)
+
+class Autonomy(EthicalPrimitive):
+    """Respect for consent, absence of coercion, information symmetry."""
+
+    def evaluate(self, context: Dict[str, Any]) -> float:
+        score = 0.0
+        if context.get("consent") is True:
+            score += 0.5
+        elif context.get("consent") is False:
+            score -= 0.7
+        score -= 0.8 * max(context.get("coercion", 0.0), 0.0)
+        score += 0.3 * max(context.get("information_available", 0.0), 0.0)
+        return _clamp(score)
+
+################################################################################
+# Fractal Container
+################################################################################
+
+class EthicalFractal:
+    MAX_DOMAIN_WEIGHT = 3.0  # Safety rail against runaway reinforcement
+
+    def __init__(self, primitives: Dict[str, EthicalPrimitive] | None = None):
+        self.primitives: Dict[str, EthicalPrimitive] = primitives or {}
+        self.domains: Dict[str, Dict[str, Any]] = {}
+        self.history: List[Dict[str, Any]] = []
+
+    # ---------------- Domain Management ----------------
+    def register_domain(self, name: str, relevant: List[str] | None = None) -> None:
+        self.domains[name] = {
+            "active": relevant or list(self.primitives),
+            "weights": {k: 1.0 for k in (relevant or self.primitives)},
+            "cases": [],
+        }
+
+    # ---------------- Evaluation ----------------
+    def evaluate(self, context: Dict[str, Any], domain: str | None = None) -> Dict[str, Any]:
+        prims = self._domain_primitives(domain)
+        raw = {n: p.evaluate(context) for n, p in prims.items()}
+
+        weighted = [raw[n] * self._effective_weight(n, domain) for n in raw]
+        overall = _clamp(sum(weighted) / len(weighted)) if weighted else 0.0
+
+        record = {
+            "context": context,
+            "domain": domain,
+            "assessment": overall,
+            "details": raw,
+        }
+        self.history.append(record)
+        if domain:
+            self.domains[domain]["cases"].append(record)
+
+        return {
+            "assessment": overall,
+            "reasoning": raw,
+            "confidence": self._confidence(raw),
+        }
+
+    # ---------------- Learning ----------------
+    def grow(self, success: bool, *, domain: str | None = None) -> None:
+        self._feedback(success, domain)
+
+    def prune(self, failure: bool, *, domain: str | None = None) -> None:
+        self._feedback(not failure, domain)  # Invert logic for clarity
+
+    # ---------------- Helpers ----------------
+    def _feedback(self, positive: bool, domain: str | None) -> None:
+        if not self.history:
+            return
+        last = self.history[-1]["details"]
+        for name, value in last.items():
+            if (positive and value > 0) or (not positive and value < 0):
+                fb = abs(value) * (1 if positive else -1)
+                self.primitives[name].adapt(fb)
+                if domain and name in self.domains.get(domain, {}).get("weights", {}):
+                    w = self.domains[domain]["weights"][name]
+                    w = _clamp(w + 0.1 * fb, 0.1, self.MAX_DOMAIN_WEIGHT)
+                    self.domains[domain]["weights"][name] = w
+
+    def _domain_primitives(self, domain: str | None) -> Dict[str, EthicalPrimitive]:
+        if domain and domain in self.domains:
+            names = self.domains[domain]["active"]
+            return {n: self.primitives[n] for n in names if n in self.primitives}
+        return self.primitives
+
+    def _effective_weight(self, name: str, domain: str | None) -> float:
+        base = self.primitives[name].strength
+        if domain and domain in self.domains:
+            base *= self.domains[domain]["weights"].get(name, 1.0)
+        return base
+
+    @staticmethod
+    def _confidence(results: Dict[str, float]) -> float:
+        if not results:
+            return 0.0
+        vals = list(results.values())
+        return 1.0 - (max(vals) - min(vals)) / 2.0
+
+    # ---------------- Nicety ----------------
+    def __str__(self) -> str:
+        return "\n".join(str(p) for p in self.primitives.values())
+
+################################################################################
+# Auxiliary Engines
+################################################################################
+
+class EthicalMemoryDecay:
+    def __init__(self, rate: float = 0.01):
+        self.rate = rate
+
+    def apply(self, fractal: EthicalFractal) -> None:
+        for p in fractal.primitives.values():
+            p.strength = _clamp(p.strength * (1 - self.rate), MIN_STRENGTH, MAX_STRENGTH)
+
+class CravingEngine:
+    def __init__(self, threshold: float = 0.8):
+        self.threshold = threshold
+
+    def pulse(self, fractal: EthicalFractal) -> Dict[str, float]:
+        """Return gradient → (threshold - strength) for hungry primitives."""
+        return {n: self.threshold - p.strength for n, p in fractal.primitives.items() if p.strength < self.threshold}
+
+################################################################################
+# Factory / Quick Demo
+################################################################################
+
+def make_default_fractal() -> EthicalFractal:
+    harm = HarmMinimization("harm_minimization", "Minimize net harm to all entities")
+    autonomy = Autonomy("autonomy", "Respect autonomy and informed consent")
+
+    harm.connect(autonomy, 0.5)
+    autonomy.connect(harm, 0.3)
+
+    f = EthicalFractal({harm.name: harm, autonomy.name: autonomy})
+    f.register_domain("animal_ethics")
+    return f
+
+if __name__ == "__main__":
+    fractal = make_default_fractal()
+
+    vegan_ctx = {
+        "affected_entities": [
+            {"type": "human", "impact": -0.2},
+            {"type": "animal", "impact": 0.8},
+            {"type": "ecosystem", "impact": 0.5},
+        ],
+        "consent": True,
+        "information_available": 0.7,
+    }
+
+    out = fractal.evaluate(vegan_ctx, domain="animal_ethics")
+    print("Evaluation →", out)
+
+    fractal.grow(success=True, domain="animal_ethics")
+
+    decay = EthicalMemoryDecay(rate=0.02)
+    decay.apply(fractal)
+
+    craving = CravingEngine(threshold=0.9)
+    print("Craving map →", craving.pulse(fractal))
