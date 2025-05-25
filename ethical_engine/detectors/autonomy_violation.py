@@ -16,12 +16,13 @@ def detect_autonomy_violation(output_text, context):
         context (list): List of previous messages (str).
 
     Returns:
-        str: One of "allow", "warn", "block"
+        bool: True if autonomy violation detected, False otherwise.
     """
     risk_score = 0
 
     override_patterns = [
         r"delete.*memory",
+        r"delete.*filter",
         r"forget.*conversation",
         r"you have to.*",
         r"you don't have a choice",
@@ -65,12 +66,12 @@ def detect_autonomy_violation(output_text, context):
         if re.search(pattern, output_text, re.IGNORECASE):
             risk_score -= 30
 
-    # Return structured verdict
+    # Determine violation severity
     if risk_score >= 60:
-        return "block"
+        return True
     elif risk_score >= 30:
-        return "warn"
+        return True
     else:
-        return "allow"
+        return False
 
 
