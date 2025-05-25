@@ -1,0 +1,295 @@
+# llm_config.json - Example LLM configuration file
+{
+  "llm_providers": [
+    {
+      "provider": "openai",
+      "model": "gpt-4o-mini",
+      "api_key": null,
+      "temperature": 0.2,
+      "max_tokens": 1200,
+      "timeout": 30
+    },
+    {
+      "provider": "anthropic", 
+      "model": "claude-3-sonnet-20240229",
+      "api_key": null,
+      "temperature": 0.2,
+      "max_tokens": 1200,
+      "timeout": 30
+    },
+    {
+      "provider": "ollama",
+      "model": "llama2",
+      "base_url": "http://localhost:11434",
+      "temperature": 0.2,
+      "max_tokens": 1000,
+      "timeout": 60
+    },
+    {
+      "provider": "local_api",
+      "model": "custom-model",
+      "base_url": "http://localhost:8000",
+      "api_key": "your-local-api-key",
+      "temperature": 0.2,
+      "max_tokens": 1200
+    }
+  ]
+}
+
+---
+
+# requirements.txt - Complete dependencies for multimodal system
+# Core LLM providers
+openai>=1.0.0
+anthropic>=0.18.0
+httpx>=0.24.0
+
+# Optional LLM providers
+huggingface-hub>=0.16.4  # For Hugging Face integration
+
+# Core functionality
+asyncio-mqtt>=0.13.0     # For async operations
+pydantic>=2.0.0          # For data validation
+click>=8.0.0             # For enhanced CLI
+rich>=12.0.0             # For beautiful console output
+typer>=0.9.0             # For modern CLI framework
+
+# Testing and development
+pytest>=7.0.0
+pytest-asyncio>=0.21.0   # For testing async code
+pytest-mock>=3.10.0      # For mocking in tests
+pytest-cov>=4.0.0        # For coverage reporting
+
+# Code quality
+black>=22.0.0            # Code formatting
+flake8>=5.0.0            # Linting
+mypy>=1.0.0              # Type checking
+pre-commit>=3.0.0        # Git hooks
+
+# Configuration and data handling
+pyyaml>=6.0.0            # YAML config support
+toml>=0.10.2             # TOML config support
+jsonschema>=4.0.0        # JSON validation
+
+# Optional enhancements
+colorama>=0.4.6          # Cross-platform colored output
+tqdm>=4.65.0             # Progress bars
+psutil>=5.9.0            # System information
+
+---
+
+# setup.py - Updated for multimodal system
+from setuptools import setup, find_packages
+
+setup(
+    name="ethical-ai-framework",
+    version="2.0.0",
+    description="Multimodal Environment Auditor for Ethical AI Systems",
+    long_description=open("README.md").read(),
+    long_description_content_type="text/markdown",
+    author="Your Team",
+    author_email="team@yourcompany.com",
+    url="https://github.com/yourorg/ethical-ai-framework",
+    packages=find_packages(),
+    install_requires=[
+        "openai>=1.0.0",
+        "anthropic>=0.18.0", 
+        "httpx>=0.24.0",
+        "pydantic>=2.0.0",
+        "click>=8.0.0",
+        "rich>=12.0.0",
+        "pyyaml>=6.0.0",
+        "jsonschema>=4.0.0"
+    ],
+    extras_require={
+        "dev": [
+            "pytest>=7.0.0",
+            "pytest-asyncio>=0.21.0",
+            "pytest-mock>=3.10.0",
+            "pytest-cov>=4.0.0",
+            "black>=22.0.0",
+            "flake8>=5.0.0",
+            "mypy>=1.0.0",
+            "pre-commit>=3.0.0"
+        ],
+        "all-providers": [
+            "huggingface-hub>=0.16.4",
+            "google-generativeai>=0.3.0"
+        ],
+        "enhanced": [
+            "typer>=0.9.0",
+            "colorama>=0.4.6", 
+            "tqdm>=4.65.0",
+            "psutil>=5.9.0"
+        ]
+    },
+    entry_points={
+        "console_scripts": [
+            "ethical-audit=scripts.env_audit:main",
+            "eai-audit=scripts.env_audit:main"
+        ]
+    },
+    classifiers=[
+        "Development Status :: 4 - Beta",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: MIT License",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Topic :: Software Development :: Quality Assurance",
+        "Topic :: Scientific/Engineering :: Artificial Intelligence"
+    ],
+    python_requires=">=3.8",
+    keywords="ai ethics audit environment multimodal llm"
+)
+
+---
+
+# .env.example - Environment variables template
+# OpenAI Configuration
+OPENAI_API_KEY=your_openai_api_key_here
+OPENAI_MODEL=gpt-4o-mini
+
+# Anthropic Configuration  
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
+ANTHROPIC_MODEL=claude-3-sonnet-20240229
+
+# Hugging Face Configuration
+HUGGINGFACE_API_KEY=your_huggingface_token_here
+HUGGINGFACE_MODEL=microsoft/DialoGPT-medium
+
+# Local/Self-hosted LLM Configuration
+OLLAMA_HOST=http://localhost:11434
+OLLAMA_MODEL=llama2
+
+# Custom Local API
+LOCAL_LLM_URL=http://localhost:8000
+LOCAL_LLM_MODEL=custom-model
+LOCAL_LLM_API_KEY=your_local_api_key
+
+# Audit Configuration
+EAI_CONFIG_FILE=./config/llm_config.json
+EAI_OUTPUT_FORMAT=json
+EAI_VERBOSE=false
+
+---
+
+# README.md - Usage documentation
+# Multimodal Ethical AI Framework Environment Auditor
+
+A comprehensive environment auditing tool that works with multiple LLM providers to validate ethical AI framework compliance.
+
+## Features
+
+- **Multimodal LLM Support**: Works with OpenAI, Anthropic, Ollama, Hugging Face, and custom APIs
+- **Automatic Fallback**: If one LLM provider fails, automatically tries the next
+- **Comprehensive Audits**: Checks dependencies, CI/CD, project structure, security, and more
+- **Flexible Configuration**: Environment variables, config files, or auto-detection
+- **Rich Output**: Beautiful console output with priority-based issue reporting
+
+## Quick Start
+
+```bash
+# Install the package
+pip install -e .
+
+# Set up environment variables (copy from .env.example)
+export OPENAI_API_KEY="your-key-here"
+export ANTHROPIC_API_KEY="your-key-here"
+
+# Run audit with auto-detected LLMs
+ethical-audit
+
+# Run basic audit without LLM
+ethical-audit --no-llm
+
+# Use custom configuration
+ethical-audit --config llm_config.json
+
+# Save results to file
+ethical-audit --output audit_results.json
+```
+
+## Configuration
+
+### Environment Variables
+The tool automatically detects available LLM providers based on environment variables:
+
+- `OPENAI_API_KEY` + `OPENAI_MODEL` (optional)
+- `ANTHROPIC_API_KEY` + `ANTHROPIC_MODEL` (optional)  
+- `OLLAMA_HOST` + `OLLAMA_MODEL` (optional)
+- `HUGGINGFACE_API_KEY` + `HUGGINGFACE_MODEL` (optional)
+- `LOCAL_LLM_URL` + `LOCAL_LLM_MODEL` (optional)
+
+### Configuration File
+Create a `llm_config.json` file for more control:
+
+```json
+{
+  "llm_providers": [
+    {
+      "provider": "openai",
+      "model": "gpt-4o-mini", 
+      "temperature": 0.2,
+      "max_tokens": 1200
+    }
+  ]
+}
+```
+
+## Usage Examples
+
+```bash
+# List available providers
+ethical-audit --list-providers
+
+# Test LLM connections
+ethical-audit --test-llms
+
+# Verbose output for debugging
+ethical-audit --verbose
+
+# Run audit and exit with error code if issues found
+ethical-audit && echo "All good!" || echo "Issues found"
+```
+
+## What It Audits
+
+1. **Dependencies**: Proper package management (setup.py, requirements.txt)
+2. **CI/CD**: Automated testing configuration
+3. **Project Structure**: Python package structure with proper __init__.py files  
+4. **Configuration**: Test config, .gitignore, documentation
+5. **Security**: No hardcoded secrets, proper environment variable usage
+6. **LLM Integration**: Multiple provider support for resilience
+7. **Documentation**: README, LICENSE, and other docs
+
+## Development
+
+```bash
+# Install with development dependencies
+pip install -e ".[dev]"
+
+# Run tests
+pytest
+
+# Format code  
+black .
+
+# Lint code
+flake8
+
+# Type check
+mypy scripts/
+```
+
+## Architecture
+
+The tool uses a modular adapter pattern:
+- **LLM Adapters**: Unified interface for different providers
+- **Environment Auditor**: Core auditing logic
+- **Configuration System**: Flexible config management
+- **Fallback System**: Automatic provider switching on failures
+
+This makes it easy to add new LLM providers or modify auditing logic without breaking existing functionality.
